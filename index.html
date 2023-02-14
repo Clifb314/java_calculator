@@ -110,6 +110,19 @@
         //seperate operations from numbers, in order
         let operations = dispArr.filter(entry => isNaN(entry))
         let numbers = dispArr.filter(entry => Number(entry))
+        let functions = operations.map(entry => convertOps(entry))
+
+        function convertOps(entry) {
+            if (entry == 'x') {
+                return function(a, b) {a * b}
+            } else if (entry == '/') {
+                return function(a, b) {a / b}
+            } else if (entry == '+') {
+                return function(a, b) {a + b}
+            } else if (entry == '-') {
+                return function(a, b) {a - b}
+            }
+        }
 
 
         //I'm sure there's a better way to do this, but let's try two loops
