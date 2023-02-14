@@ -103,23 +103,28 @@
         display.textContent = ''
     }
 
+    function performEq() {
+        let displayCont = document.querySelector(".display").textContent
+        let dispArr = displayCont.split(' ')
+
+        //seperate operations from numbers, in order
+        let operations = dispArr.filter(entry => isNaN(entry))
+        let numbers = dispArr.filter(entry => Number(entry))
+
+
+        //I'm sure there's a better way to do this, but let's try two loops
+        let result = 0
+        numLen = numbers.length
+        for (let i = 0; i < (numbers.length - 1); i++) {
+            for (let j = 0; j < functions.length; j++) {
+                let result = functions[j](numbers[i], numbers[i+1])
+                numbers[i+1] = result
+            }
+        }   
+        return result
+    }
 
 </script>
 
-
-
-
-
-
-
-
-
 </body>
-
-
-
-
-
-
-
 </html>
