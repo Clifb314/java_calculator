@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Free Calculator!</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="topCont">
+        <div class="display"></div>
+        <div class="solar"></div>
+    </div>
+    <div class="bottomCont">
+        <div class="numbers">
+            <ul class="topRow">
+                <li><button type="button">1</button></li>
+                <li><button type="button">2</button></li>
+                <li><button type="button">3</button></li>
+            </ul>
+            <ul class="middleRow">
+                <li><button type="button">4</button></li>
+                <li><button type="button">5</button></li>
+                <li><button type="button">6</button></li>
+            </ul>
+            <ul class="bottomRow">
+                <li><button type="button">7</button></li>
+                <li><button type="button">8</button></li>
+                <li><button type="button">9</button></li>
+            </ul>
+            <div class="zero"><button type="button">0</button></div>
+        </div>
+        <div class="functions">
+            <ul class="topFxn">
+                <li><button type="button">+</button></li>
+                <li><button type="button">-</button></li>
+            </ul>
+            <ul class="bottomFxn">
+                <li><button type="button">x</button></li>
+                <li><button type="button">/</button></li>
+            </ul>
+            <div class="equal"><button type="button">=</button></div>
+            <div class="clear"><button type="button">Clear</button></div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    let btns = document.querySelectorAll("div.numbers button");
+
+    btns.forEach(key => {
+        key.addEventListener('click', () => {
+            displayNumbers(key)
+        })
+    })
+
+    let fxns = document.querySelectorAll("div.functions button")
+    fxns.forEach(key => {
+        key.addEventListener('click', () => {
+            displayFxn(key)
+        })
+    })
+
+    let equal = document.querySelector("div.equal button")
+    equal.addEventListener('click', () => {
+        performEq()
+    })
+
+    let clear = document.querySelector("div.clear button")
+    clear.addEventListener('click', () => {
+        clearDisplay()
+    })
+
+    function displayNumbers(key) {
+        let number = key.textContent
+        let display = document.querySelector(".display")
+
+        if (display.textContent == '') {
+            display.textContent = number
+        } else {
+            display.textContent += number
+        }
+    }
+
+    function displayFxn(key) {
+        let fxn = key.textContent
+        let display = document.querySelector(".display")
+        let currDisp = display.textContent
+        if (currDisp.endsWith(' ') || currDisp === '') {
+            return
+        } else {
+            display.textContent += ` ${fxn} `}
+    }
+
+    function performEq() {
+        let currDisp = document.querySelector(".display").textContent
+        let mathArr = currDisp.split(' ')
+    }
+
+
+    function clearDisplay() {
+        let display = document.querySelector(".display")
+        display.textContent = ''
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+</html>
