@@ -14,38 +14,42 @@
     </div>
     <div class="bottomCont">
         <div class="numbers">
-            <ul class="topRow">
-                <li><button type="button">1</button></li>
-                <li><button type="button">2</button></li>
-                <li><button type="button">3</button></li>
-            </ul>
-            <ul class="middleRow">
-                <li><button type="button">4</button></li>
-                <li><button type="button">5</button></li>
-                <li><button type="button">6</button></li>
-            </ul>
-            <ul class="bottomRow">
-                <li><button type="button">7</button></li>
-                <li><button type="button">8</button></li>
-                <li><button type="button">9</button></li>
-            </ul>
-            <div class="zero"><button type="button">0</button></div>
+            <div class="topRow">
+                <button type="button">1</button>
+                <button type="button">2</button>
+                <button type="button">3</button>
+            </div>
+            <div class="middleRow">
+                <button type="button">4</button>
+                <button type="button">5</button>
+                <button type="button">6</button>
+            </div>
+            <div class="bottomRow">
+                <button type="button">7</button>
+                <button type="button">8</button>
+                <button type="button">9</button>
+            </div>
+            <div class="lastRow">
+                <div class="zero"><button type="button">0</button></div>
+                <div class="period"><button type="button">.</button></div>
+            </div>
         </div>
         <div class="functions">
-            <ul class="topFxn">
-                <li><button type="button">+</button></li>
-                <li><button type="button">-</button></li>
-            </ul>
-            <ul class="bottomFxn">
-                <li><button type="button">x</button></li>
-                <li><button type="button">/</button></li>
-            </ul>
+            <div class="topFxn">
+                <button type="button">+</button></li>
+                <button type="button">-</button></li>
+            </div>
+            <div class="bottomFxn">
+                <button type="button">x</button>
+                <button type="button">/</button>
+            </div>
             <div class="equal"><button type="button">=</button></div>
             <div class="clear"><button type="button">Clear</button></div>
         </div>
     </div>
 
 <script type="text/javascript">
+    //Event listeners for buttons, display
     let btns = document.querySelectorAll("div.numbers button");
 
     btns.forEach(key => {
@@ -54,7 +58,7 @@
         })
     })
 
-    let fxns = document.querySelectorAll("div.functions button")
+    let fxns = document.querySelectorAll(".topFxn button, .bottomFxn button")
     fxns.forEach(key => {
         key.addEventListener('click', () => {
             displayFxn(key)
@@ -71,10 +75,16 @@
         clearDisplay()
     })
 
+    document.querySelector(".display").addEventListener('click', () => {
+        clearDisplay()
+    })
+
+    //functions to perform on click
     function displayNumbers(key) {
         let number = key.textContent
-        let display = document.querySelector(".display")
 
+        let display = document.querySelector(".display")
+        //This was prob not needed? Can you concat onto an empty string?
         if (display.textContent == '') {
             display.textContent = number
         } else {
@@ -86,16 +96,19 @@
         let fxn = key.textContent
         let display = document.querySelector(".display")
         let currDisp = display.textContent
+
+        //Check that the last character was a integer, not a fxn or empty string
         if (currDisp.endsWith(' ') || currDisp === '') {
             return
         } else {
             display.textContent += ` ${fxn} `}
     }
 
-    function performEq() {
-        let currDisp = document.querySelector(".display").textContent
-        let mathArr = currDisp.split(' ')
-    }
+    //Is this left over? why is it here twice
+    //function performEq() {
+    //    let currDisp = document.querySelector(".display").textContent
+    //    let mathArr = currDisp.split(' ')
+    //}
 
 
     function clearDisplay() {
@@ -105,36 +118,61 @@
 
     function performEq() {
         let displayCont = document.querySelector(".display").textContent
+
+        if (displayCont.endsWith(' ') || displayCont == '') {
+            return
+        }
+
+        let output = document.querySelector(".display")
         let dispArr = displayCont.split(' ')
 
         //seperate operations from numbers, in order
         let operations = dispArr.filter(entry => isNaN(entry))
-        let numbers = dispArr.filter(entry => Number(entry))
+
+        //Be careful because Number(0) returns 0 (false) which tricked the filter fxn
+        //!isNaN worked
+        let numbers = dispArr.filter(entry => !isNaN(entry))
         let functions = operations.map(entry => convertOps(entry))
 
+
+        //Let's try an array of objects
+        //nevermind, an array of functions worked out
         function convertOps(entry) {
             if (entry == 'x') {
-                return function(a, b) {a * b}
+                return function(a, b) {return a * b}
             } else if (entry == '/') {
-                return function(a, b) {a / b}
+                //return limited to 6 decimals with math.floor
+                return function(a, b) {
+                    if (b == 0) {
+                        alert("Thanks a lot. You destroyed everything!")
+                    }
+                    return (Math.floor(100000*(a / b)) / 100000)}
             } else if (entry == '+') {
-                return function(a, b) {a + b}
+                return function(a, b) {return a + b}
             } else if (entry == '-') {
-                return function(a, b) {a - b}
+                return function(a, b) {return a - b}
             }
+            else return
         }
 
 
         //I'm sure there's a better way to do this, but let's try two loops
+        //Instead I used forEach like a while loop and iterated until we hit the end of the array
         let result = 0
-        numLen = numbers.length
-        for (let i = 0; i < (numbers.length - 1); i++) {
-            for (let j = 0; j < functions.length; j++) {
-                result = functions[j](numbers[i], numbers[i+1])
+        let numLen = numbers.length
+        let math, a, b
+        let i = 0
+
+        functions.forEach(fxn => {
+            if (numbers[i+1] !== undefined) {
+                math = fxn
+                a = Number(numbers[i])
+                b = Number(numbers[i+1])
+                result = math(a, b)
                 numbers[i+1] = result
-            }
-        }   
-        return result
+                i++}
+        })
+        output.textContent = `${result}`
     }
 
 </script>
